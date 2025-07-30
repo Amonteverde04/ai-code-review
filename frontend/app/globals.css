@@ -4,6 +4,9 @@
   --background: #fafafa;
   --foreground: #000907;
   --section-border: rgba(0, 9, 7, 0.3);
+  --holo-gradient: linear-gradient(90deg, #00ff73 0%, #00e676 25%, #00c37a 50%, #4bff73 75%, #00ff73 100%);
+  --holo-animation: holo-shine 5s ease-in-out infinite;
+  --holo-animation-hover: holo-shine 3s ease-in-out 1;
 }
 
 @theme inline {
@@ -45,9 +48,9 @@ body {
 }
 
 .container-glow {
-  -webkit-box-shadow: 0px 0px 282px 0px rgba(168, 75, 255, 0.35);
-  -moz-box-shadow: 0px 0px 282px 0px rgba(168, 75, 255, .35);
-  box-shadow: 0px 0px 282px 0px rgba(168, 75, 255, .35);
+  -webkit-box-shadow: 0px 0px 282px 0px rgba(0, 255, 115, 0.35), 0px 0px 120px 0px rgba(0, 227, 118, 0.25), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
+  -moz-box-shadow: 0px 0px 282px 0px rgba(0, 255, 115, 0.35), 0px 0px 120px 0px rgba(0, 227, 118, 0.25), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
+  box-shadow: 0px 0px 282px 0px rgba(0, 255, 115, 0.35), 0px 0px 120px 0px rgba(0, 227, 118, 0.25), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
 }
 
 .section-title {
@@ -57,8 +60,58 @@ body {
   color: var(--foreground);
 }
 
+.card-holo-container {
+  position: relative;
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(250, 250, 250, 0.05);
+  backdrop-filter: blur(5.3px);
+  -webkit-backdrop-filter: blur(5.3px);
+  border: 1px solid var(--section-border);
+}
+
+.cards-container {
+  height: fit-content;
+  justify-content: space-between;
+}
+
 .drop-card {
   width: 100%;
+}
+
+.form-button {
+  background: var(--holo-gradient);
+  background-size: 200% 200%;
+  background-position: left center;
+  color: var(--background);
+  padding: 12px 24px;
+  border-radius: 4px;
+  width: 100%;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-position .5s ease-in-out;
+}
+
+.form-button:hover {
+  background-position: right center;
+}
+
+.form-button-clear {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: var(--foreground);
+  background:
+    linear-gradient(var(--background), var(--background)) padding-box,
+    var(--holo-gradient) border-box;
+  background-size: 200% 200%;
+  background-position: left center;
+  transition: background-position .5s ease-in-out;
+}
+
+.form-button-clear:hover {
+  background-position: right center;
 }
 
 input[type="file"] {
@@ -118,16 +171,9 @@ input[type="file"]::file-selector-button:hover {
   background-position: right center;
 }
 
-.radio-input {
-  accent-color: #43e9e9;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.success-container {
+.warning-container {
   padding: 16px;
-  background: rgb(0, 128, 0);
+  background: rgb(255, 100, 0);
   position: fixed;
   width: 100vw;
   height: fit-content;
@@ -174,11 +220,7 @@ input[type="file"]::file-selector-button:hover {
 }
 
 @media (min-width: 450px) {
-  .hero-text {
-    font-size: 3.5rem;
-  }
-
-  .form-button, .hero-button {
+  .form-button, .form-button-clear {
     width: fit-content;
   }
 

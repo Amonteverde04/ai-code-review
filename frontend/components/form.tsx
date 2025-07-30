@@ -1,21 +1,18 @@
 'use client';
 
-import { outputFileTypes } from "../lib/constants";
-import { CheckIcon, ExclamationTriangleIcon, FileIcon, SymbolIcon } from "@radix-ui/react-icons";
-import JSZip from "jszip";
+import { ExclamationTriangleIcon, FileIcon, SymbolIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
 export default function Form() {
     const [files, setFiles] = useState<File[]>([]);
     const [rejectedFiles, setRejectedFiles] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [outputFileType, setOutputFileType] = useState("png");
+    const [requestError, setRequestError] = useState(false);
 
-    const handleSuccess = () => {
-        setSuccess(true);
+    const handleRequestError = () => {
+        setRequestError(true);
         setTimeout(() => {
-            setSuccess(false);
+            setRequestError(false);
         }, 3000);
     }
 
@@ -44,53 +41,17 @@ export default function Form() {
         e.preventDefault();
     
         const rejected: string[] = [];
-        const input = document.getElementById('heicInput') as HTMLInputElement;
+        const input = document.getElementById('file_input') as HTMLInputElement;
         const files = input?.files;
         if (!files || files.length === 0)
         {
             setIsLoading(false);
             return;
         }
-    
-        // ✅ Import heic2any only on the client
-        const heic2any = (await import('heic2any')).default;
-        const zip = new JSZip();
-    
-        for (const file of files) {
-            const isHeic = file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic' || file.type === 'image/heif';
 
-            if (!isHeic) {
-                rejected.push(file.name);
-                continue;
-            }
-
-            try {
-              const blob = await heic2any({
-                blob: file,
-                toType: `image/${outputFileType}`,
-                quality: 0.9
-              });
-
-              const outputFileName = file.name.replace(/\.heic$/i, `.${outputFileType}`);
-              zip.file(outputFileName, blob as Blob);
-            } catch (error) {
-                rejected.push(file.name);
-            }
-        }
-
-        if (files.length === rejected.length) {
-            setRejectedFiles(rejected);
-            setIsLoading(false);
-            return;
-        }
-
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(zipBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'converted-images.zip';
-        a.click();
-        URL.revokeObjectURL(url);
+        // Make a request to the backend
+        // Get code review responses
+        
 
         if (rejected.length > 0)
         {
@@ -103,12 +64,11 @@ export default function Form() {
         }
 
         setIsLoading(false);
-        handleSuccess();
     };
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 card-holo-container drop-card" aria-label="File upload form">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 container-glow card-holo-container drop-card" aria-label="File upload form">
                 <div className="flex flex-row gap-2 items-center" id="upload-files" aria-label="Upload files title">
                     <FileIcon className="w-5 h-5" aria-label="File icon" />
                     <h1>Upload your files</h1>
@@ -117,11 +77,11 @@ export default function Form() {
                     {isLoading && 
                     <div className="flex flex-row gap-2 items-center justify-center" aria-label="Loading container">
                         <SymbolIcon className="w-5 h-5 animate-spin" aria-label="Loading icon" />
-                        <p className="dots">Converting files<span className="dot-container"><span className="dot-animation"></span></span></p>
+                        <p className="dots">Submitting files<span className="dot-container"><span className="dot-animation"></span></span></p>
                     </div>}
                     {!isLoading && 
                         <>
-                            <input type="file" multiple accept="image/heic" onChange={handleFileChange} id="heicInput" aria-label="File input" />
+                            <input type="file" multiple onChange={handleFileChange} id="file_input" aria-label="File input" />
                             {files.length > 0 && (
                                 <div className="flex flex-col gap-2" aria-label="Files container">
                                     {files.map((file, index) => (
@@ -134,28 +94,8 @@ export default function Form() {
                         </>
                     }
                 </div>
-                <div className="flex flex-col gap-2" aria-label="Output file type container">
-                    <div className="flex flex-col gap-2">
-                        <label aria-label="Select output file type">Select output file type:</label>
-                        <div className="flex flex-row gap-4">
-                            {outputFileTypes.map((fileType, index) => (
-                            <label key={index} className="flex items-center gap-1" aria-label={`Select ${fileType.name} file type`}>
-                                <input className="radio-input"
-                                    type="radio"
-                                    name="filetype"
-                                    value={fileType.name}
-                                    checked={fileType.name === outputFileType}
-                                    onChange={() => setOutputFileType(fileType.name)}
-                                    readOnly
-                                />
-                                {fileType.name}
-                            </label>
-                            ))}
-                        </div>
-                    </div>
-                </div>
                 <div className="flex flex-row gap-2" aria-label="Buttons container">
-                    <button className="hero-button form-button" type="submit" aria-label="Convert button">Convert</button>
+                    <button className="form-button" type="submit" aria-label="Submit review button">Convert</button>
                     <button className="form-button-clear" onClick={handleClear} aria-label="Clear button">Clear</button>
                 </div>
             </form>
@@ -172,13 +112,13 @@ export default function Form() {
                     ))}
                 </div>
             )}
-            {success && (
-                <div className="flex flex-col gap-2 success-container glow-container" aria-label="Success container">
-                    <div className="flex flex-row gap-2 items-center" aria-label="Success message">
-                        <CheckIcon className="w-5 h-5" aria-label="Success icon" />
-                        <h1>Success</h1>
+            {requestError && (
+                <div className="flex flex-col gap-2 warning-container glow-container" aria-label="Warning container">
+                    <div className="flex flex-row gap-2 items-center" aria-label="Warning message">
+                        <ExclamationTriangleIcon className="w-5 h-5" aria-label="Warning icon" />
+                        <h1>Failed to submit</h1>
                         -
-                        <p>Your files have been converted successfully.</p>
+                        <p>Your files failed to submit.</p>
                     </div>
                 </div>
             )}
