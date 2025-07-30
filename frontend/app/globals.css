@@ -31,7 +31,21 @@ body {
 }
 
 .navbar-container {
-  border-bottom: 1px solid var(--section-border);
+  border-bottom: 1px solid var(--section-border); 
+}
+
+.nav-link {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #00e676;
+  text-decoration: underline;
+}
+
+.separator {
+  border: 1px solid var(--section-border);
 }
 
 .logo-container {
@@ -50,7 +64,7 @@ body {
 .container-glow {
   -webkit-box-shadow: 0px 0px 282px 0px rgba(0, 255, 115, 0.35), 0px 0px 120px 0px rgba(0, 227, 118, 0.25), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
   -moz-box-shadow: 0px 0px 282px 0px rgba(0, 255, 115, 0.35), 0px 0px 120px 0px rgba(0, 227, 118, 0.25), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
-  box-shadow: 0px 0px 282px 0px rgba(0, 255, 115, 0.35), 0px 0px 120px 0px rgba(0, 227, 118, 0.25), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
+  box-shadow: 0px 0px 15px 0px rgba(0, 255, 115, 0.25), 0px 0px 30px 0px rgba(0, 227, 118, 0.20), 0px 0px 60px 0px rgba(75, 255, 115, 0.15);
 }
 
 .section-title {
@@ -77,6 +91,37 @@ body {
 
 .drop-card {
   width: 100%;
+}
+
+.editor-language-selector {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: var(--foreground);
+  background:
+    linear-gradient(var(--background), var(--background)) padding-box,
+    var(--holo-gradient) border-box;
+  background-size: 200% 200%;
+  background-position: left center;
+  transition: background-position .5s ease-in-out;
+}
+
+.editor-language-selector:hover {
+  background-position: right center;
+}
+
+.editor-language-selector:focus {
+  outline: none;
+}
+
+.editor-language-item {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.editor-language-item:hover {
+  background: var(--holo-gradient);
 }
 
 .form-button {
@@ -219,12 +264,37 @@ input[type="file"]::file-selector-button:hover {
   100% { content: ''; }
 }
 
-@media (min-width: 450px) {
+.editor-container {
+  border-radius: 4px;
+  overflow-x: hidden;
+  border: 1px solid var(--section-border);
+}
+
+.ai-response {
+  background: rgba(30,30,30,255);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-left: 1px solid var(--section-border);
+}
+
+.ai-response-title {
+  border-bottom: 1px solid var(--section-border);
+  padding-bottom: 16px;
+}
+
+@media (min-width: 639px) {
   .form-button, .form-button-clear {
     width: fit-content;
   }
 
   .section-title {
     font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 1279px) {
+  .ai-response {
+    border-top: 1px solid var(--section-border);
+    border-left: none;
   }
 }

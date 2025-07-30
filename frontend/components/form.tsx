@@ -2,6 +2,8 @@
 
 import { ExclamationTriangleIcon, FileIcon, SymbolIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import Loading from "./loading";
+import ButtonContainer from "./button-container";
 
 export default function Form() {
     const [files, setFiles] = useState<File[]>([]);
@@ -37,6 +39,7 @@ export default function Form() {
     };
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        console.log("file upload submitted");
         setIsLoading(true);
         e.preventDefault();
     
@@ -52,7 +55,6 @@ export default function Form() {
         // Make a request to the backend
         // Get code review responses
         
-
         if (rejected.length > 0)
         {
             setRejectedFiles(rejected);
@@ -68,20 +70,18 @@ export default function Form() {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 container-glow card-holo-container drop-card" aria-label="File upload form">
-                <div className="flex flex-row gap-2 items-center" id="upload-files" aria-label="Upload files title">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 drop-card" aria-label="File upload form">
+                <div className="flex flex-row gap-2 items-center section-title" id="upload-files" aria-label="Upload files title">
                     <FileIcon className="w-5 h-5" aria-label="File icon" />
-                    <h1>Upload your files</h1>
+                    <h1>Upload your file</h1>
                 </div>
                 <div className="drop-zone" aria-label="File drop zone">
-                    {isLoading && 
-                    <div className="flex flex-row gap-2 items-center justify-center" aria-label="Loading container">
-                        <SymbolIcon className="w-5 h-5 animate-spin" aria-label="Loading icon" />
-                        <p className="dots">Submitting files<span className="dot-container"><span className="dot-animation"></span></span></p>
-                    </div>}
+                    {isLoading && (
+                        <Loading text="Submitting files" justify="justify-center" />
+                    )}
                     {!isLoading && 
                         <>
-                            <input type="file" multiple onChange={handleFileChange} id="file_input" aria-label="File input" />
+                            <input type="file" onChange={handleFileChange} id="file_input" aria-label="File input" />
                             {files.length > 0 && (
                                 <div className="flex flex-col gap-2" aria-label="Files container">
                                     {files.map((file, index) => (
@@ -94,10 +94,7 @@ export default function Form() {
                         </>
                     }
                 </div>
-                <div className="flex flex-row gap-2" aria-label="Buttons container">
-                    <button className="form-button" type="submit" aria-label="Submit review button">Convert</button>
-                    <button className="form-button-clear" onClick={handleClear} aria-label="Clear button">Clear</button>
-                </div>
+                <ButtonContainer handleClear={handleClear} buttonText="Review uploaded file" />
             </form>
             {rejectedFiles.length > 0 && (
                 <div className="flex flex-col gap-2 card-holo-container" aria-label="Rejected files container">
