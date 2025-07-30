@@ -1,0 +1,72 @@
+# ----------------------------------------
+# 🔒 Sensitive & Env Files
+# ----------------------------------------
+.env
+.env.*        # Ignore .env.local, .env.production, etc.
+*.pem         # Private keys or certs
+
+# ----------------------------------------
+# 💡 General
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+*.log
+*.tsbuildinfo
+
+# ----------------------------------------
+# 🐳 Docker
+# ----------------------------------------
+docker-compose.override.yml
+*.tar          # Docker image exports
+**/tmp_docker/
+
+# ----------------------------------------
+# 🧪 Testing & Coverage
+# ----------------------------------------
+coverage/
+*.test
+*.out
+*.coverage
+
+# ----------------------------------------
+# 📦 Node.js / Frontend (Next.js)
+# ----------------------------------------
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.vercel/
+frontend/package-lock.json
+frontend/yarn.lock
+frontend/pnpm-lock.yaml
+
+# ----------------------------------------
+# 🧬 Yarn v2+
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ----------------------------------------
+# 🧱 Build Outputs
+frontend/build/
+backend/build/
+
+# ----------------------------------------
+# 🛠️ Go / Backend
+backend/bin/
+backend/vendor/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# ----------------------------------------
+# 🔧 Debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*

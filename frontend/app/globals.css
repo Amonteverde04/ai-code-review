@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafafa;
+  --foreground: #000907;
+  --section-border: rgba(0, 9, 7, 0.3);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #000907;
+    --foreground: #FAFAFA;
+    --section-border: rgba(250, 250, 250, 0.3);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+}
+
+.navbar-container {
+  border-bottom: 1px solid var(--section-border);
+}
+
+.logo-container {
+  background: var(--holo-gradient);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo-container:hover {
+  animation: var(--holo-animation-hover);
+}
+
+.container-glow {
+  -webkit-box-shadow: 0px 0px 282px 0px rgba(168, 75, 255, 0.35);
+  -moz-box-shadow: 0px 0px 282px 0px rgba(168, 75, 255, .35);
+  box-shadow: 0px 0px 282px 0px rgba(168, 75, 255, .35);
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-wrap: balance;
+  color: var(--foreground);
+}
+
+.drop-card {
+  width: 100%;
+}
+
+input[type="file"] {
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  background:
+    linear-gradient(var(--background), var(--background)) padding-box,
+    var(--holo-gradient) border-box;
+  background-size: 200% 200%;
+  background-position: left center;
+  transition: background-position .5s ease-in-out;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-position: right center;
+}
+
+.drop-zone {
+  border: 1px dashed var(--section-border);
+  border-radius: 4px;
+  padding: 16px;
+  cursor: pointer;
+  max-height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.form-button {
+  padding: 12px 24px;
+}
+
+.form-button-clear {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: var(--foreground);
+  background:
+    linear-gradient(var(--background), var(--background)) padding-box,
+    var(--holo-gradient) border-box;
+  background-size: 200% 200%;
+  background-position: left center;
+  transition: background-position .5s ease-in-out;
+}
+
+.form-button-clear:hover {
+  background-position: right center;
+}
+
+.radio-input {
+  accent-color: #43e9e9;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.success-container {
+  padding: 16px;
+  background: rgb(0, 128, 0);
+  position: fixed;
+  width: 100vw;
+  height: fit-content;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+.animate-spin {
+  animation: smooth-spin-pause 1.5s ease-in-out infinite;
+}
+
+.dot-container {
+  display: inline-block;
+  width: 1.5em; /* enough space for 3 dots */
+  text-align: left;
+}
+
+.dot-animation::after {
+  content: '';
+  animation: dots 1.2s steps(4, end) infinite;
+}
+
+@keyframes holo-shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes smooth-spin-pause {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(1080deg); }
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+
+@media (min-width: 450px) {
+  .hero-text {
+    font-size: 3.5rem;
+  }
+
+  .form-button, .hero-button {
+    width: fit-content;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+}
