@@ -37,7 +37,8 @@ export default function InlineEditor() {
         })
         .then(response => response.json())
         .then(data => {
-            setAiResponse(data.response);
+            const inlineFeedback = data.ai_response?.["online-editor"] || "No inline feedback found.";
+            setAiResponse(inlineFeedback);
             setIsGenerating(false);
         })
         .catch(error => {

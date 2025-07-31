@@ -2,9 +2,7 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"strings"
 
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/googleai"
@@ -79,11 +77,6 @@ func (cr *CodeReviewer) ReviewCode(code string, filename string, language string
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Printf("\n=== Review for %s ===\n", filename)
-	fmt.Println(strings.Repeat("=", 80))
-	fmt.Println(response.Choices[0].Content)
-	fmt.Println(strings.Repeat("=", 80))
 
 	return response.Choices[0].Content, nil
 }

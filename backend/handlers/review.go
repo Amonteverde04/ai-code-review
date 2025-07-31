@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"path"
 	"strings"
 
 	"github.com/Amonteverde04/ai-code-review/backend/internal"
@@ -39,7 +40,7 @@ func HandleReview(w http.ResponseWriter, r *http.Request) {
 	} else {
 		response = pkg.ReviewResponse{
 			Success: false,
-			Error:   "Unsupported content type. Use application/json for editor content or multipart/form-data for file uploads",
+			Error:   "Unsupported content type. Use multipart/form-data for editor content or file uploads.",
 		}
 	}
 
@@ -107,6 +108,14 @@ func handleReviewRequest(r *http.Request) pkg.ReviewResponse {
 		}
 	}
 
+	formHasTooManyFiles := len(r.MultipartForm.File) > 1
+	if formHasTooManyFiles {
+		return pkg.ReviewResponse{
+			Success: false,
+			Error:   "Only one file can be uploaded at a time",
+		}
+	}
+
 	payloadStr := r.FormValue("payload")
 
 	if formHasNoFiles {
@@ -143,6 +152,15 @@ func handleReviewRequest(r *http.Request) pkg.ReviewResponse {
 			}
 
 			filename := fileHeader.Filename
+			file_extension := strings.TrimPrefix(path.Ext(filename), ".")
+
+			if _, ok := pkg.AcceptedFileExtensions[file_extension]; !ok {
+				return pkg.ReviewResponse{
+					Success: false,
+					Error:   "Unsupported file extension",
+				}
+			}
+
 			processed_code, err := process_code(string(content), filename, requestBody.Language)
 			if err != nil {
 				fmt.Println("AI review failed. Skipping file: ", filename)

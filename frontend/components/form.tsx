@@ -43,14 +43,18 @@ export default function Form() {
 
         // Make a request to the backend
         const formData = new FormData();
-        formData.append("payload", JSON.stringify({ files: files }));
+        for (let i = 0; i < files.length; i++) {
+          formData.append("files", files[i]); 
+        }
+        formData.append("payload", JSON.stringify({ language: language }));
         
         fetch("http://localhost:8080/review", {
             method: "POST",
-            body: formData
+            body: formData,
         })
         .then(response => response.json())
         .then(data => {
+            console.log("File upload response: ", data);
             setAiResponse(data.response);
             setIsGenerating(false);
         })
@@ -73,7 +77,6 @@ export default function Form() {
                         <FileIcon className="w-5 h-5" aria-label="File icon" />
                         <h1>Upload your file</h1>
                     </div>
-                    <LanguageSelector language={language} setLanguage={setLanguage} />
                 </div>
                 <div className="drop-zone" aria-label="File drop zone">
                     {isGenerating && (
@@ -96,7 +99,7 @@ export default function Form() {
                 </div>
                 <div className={`flex sm:flex-row flex-col gap-4 ${requestError ? "justify-between" : "justify-end"}`}>
                     {requestError && (
-                      <ErrorToast title="Failed to submit" icon={<ExclamationTriangleIcon className="w-5 h-5" aria-label="Warning icon" />} />
+                      <ErrorToast title="Failed to submit - ensure the file is a valid and supported programming language" icon={<ExclamationTriangleIcon className="w-5 h-5" aria-label="Warning icon" />} />
                     )}
                     <ButtonContainer handleClear={handleClear} buttonText="Review uploaded file" buttonType="submit" disabled={isGenerating || files.length === 0} />
                 </div>
