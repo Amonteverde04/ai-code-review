@@ -4,19 +4,15 @@ import { ExclamationTriangleIcon, FileIcon, SymbolIcon } from "@radix-ui/react-i
 import { useState } from "react";
 import Loading from "./loading";
 import ButtonContainer from "./button-container";
+import ErrorToast from "./error-toast";
+import LanguageSelector from "./language-selector";
 
 export default function Form() {
     const [files, setFiles] = useState<File[]>([]);
-    const [rejectedFiles, setRejectedFiles] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [aiResponse, setAiResponse] = useState("");
     const [requestError, setRequestError] = useState(false);
-
-    const handleRequestError = () => {
-        setRequestError(true);
-        setTimeout(() => {
-            setRequestError(false);
-        }, 3000);
-    }
+    const [language, setLanguage] = useState("javascript");
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -26,11 +22,6 @@ export default function Form() {
     };
 
     const handleClear = () => {
-        setRejectedFiles([]);
-        handleClearInputOnly();
-    };
-
-    const handleClearInputOnly = () => {
         setFiles([]);
         const input = document.querySelector("input[type='file']") as HTMLInputElement;
         if (input) {
@@ -39,47 +30,56 @@ export default function Form() {
     };
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        console.log("file upload submitted");
-        setIsLoading(true);
+        setIsGenerating(true);
         e.preventDefault();
     
-        const rejected: string[] = [];
         const input = document.getElementById('file_input') as HTMLInputElement;
         const files = input?.files;
         if (!files || files.length === 0)
         {
-            setIsLoading(false);
+            setIsGenerating(false);
             return;
         }
 
         // Make a request to the backend
-        // Get code review responses
+        const formData = new FormData();
+        formData.append("payload", JSON.stringify({ files: files }));
         
-        if (rejected.length > 0)
-        {
-            setRejectedFiles(rejected);
-            handleClearInputOnly();
-        }
-        else
-        {
-            handleClear();
-        }
+        fetch("http://localhost:8080/review", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            setAiResponse(data.response);
+            setIsGenerating(false);
+        })
+        .catch(error => {
+            setRequestError(true);
+            setTimeout(() => {
+                setRequestError(false);
+            }, 5000);
+            setIsGenerating(false);
+        });
 
-        setIsLoading(false);
+        handleClear();
     };
 
     return (
         <>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 drop-card" aria-label="File upload form">
-                <div className="flex flex-row gap-2 items-center section-title" id="upload-files" aria-label="Upload files title">
-                    <FileIcon className="w-5 h-5" aria-label="File icon" />
-                    <h1>Upload your file</h1>
+                <div className="flex flex-row justify-between">
+                    <div className="flex flex-row gap-2 items-center section-title" id="upload-files" aria-label="Upload files title">
+                        <FileIcon className="w-5 h-5" aria-label="File icon" />
+                        <h1>Upload your file</h1>
+                    </div>
+                    <LanguageSelector language={language} setLanguage={setLanguage} />
                 </div>
                 <div className="drop-zone" aria-label="File drop zone">
-                    {isLoading && (
-                        <Loading text="Submitting files" justify="justify-center" />
+                    {isGenerating && (
+                        <Loading text="Submitting files" justify="justify-start" />
                     )}
-                    {!isLoading && 
+                    {!isGenerating && 
                         <>
                             <input type="file" onChange={handleFileChange} id="file_input" aria-label="File input" />
                             {files.length > 0 && (
@@ -94,31 +94,13 @@ export default function Form() {
                         </>
                     }
                 </div>
-                <ButtonContainer handleClear={handleClear} buttonText="Review uploaded file" />
+                <div className={`flex sm:flex-row flex-col gap-4 ${requestError ? "justify-between" : "justify-end"}`}>
+                    {requestError && (
+                      <ErrorToast title="Failed to submit" icon={<ExclamationTriangleIcon className="w-5 h-5" aria-label="Warning icon" />} />
+                    )}
+                    <ButtonContainer handleClear={handleClear} buttonText="Review uploaded file" buttonType="submit" disabled={isGenerating || files.length === 0} />
+                </div>
             </form>
-            {rejectedFiles.length > 0 && (
-                <div className="flex flex-col gap-2 card-holo-container" aria-label="Rejected files container">
-                    <div className="flex flex-row gap-2 items-center" id="upload-files">
-                        <ExclamationTriangleIcon className="w-5 h-5" color="#ffe34b" aria-label="Rejected files icon" />
-                        <h1>Rejected files</h1>
-                    </div>
-                    {rejectedFiles.map((file, index) => (
-                        <div key={file} aria-label={`Rejected file ${index + 1} name`}>
-                            {index + 1}. {file}
-                        </div>
-                    ))}
-                </div>
-            )}
-            {requestError && (
-                <div className="flex flex-col gap-2 warning-container glow-container" aria-label="Warning container">
-                    <div className="flex flex-row gap-2 items-center" aria-label="Warning message">
-                        <ExclamationTriangleIcon className="w-5 h-5" aria-label="Warning icon" />
-                        <h1>Failed to submit</h1>
-                        -
-                        <p>Your files failed to submit.</p>
-                    </div>
-                </div>
-            )}
         </>
     );
 }
