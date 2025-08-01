@@ -59,7 +59,6 @@ func handleEditorRequest(r *http.Request) pkg.ReviewResponse {
 			fmt.Println("Failed to parse JSON payload: ", err)
 		}
 	} else {
-		// Fallback: use individual fields if no JSON payload was given
 		requestBody = pkg.RequestBody{
 			Language:   r.FormValue("language"),
 			EditorCode: r.FormValue("editorCode"),
@@ -129,7 +128,6 @@ func handleReviewRequest(r *http.Request) pkg.ReviewResponse {
 			fmt.Println("Failed to parse JSON payload: ", err)
 		}
 	} else {
-		// Fallback: use individual fields if no JSON payload was given
 		requestBody = pkg.RequestBody{
 			Language: "language",
 		}

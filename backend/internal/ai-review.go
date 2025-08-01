@@ -52,7 +52,7 @@ func NewCodeReviewer(code string, filename string, language string) (*CodeReview
 		- Explain the best practice for the issue
 		- Rate the severity of the issue: Critical, Warning, Suggestion
 		
-		focus on the most critical issues first.`, []string{"code", "filename"})
+		focus on the most critical issues first. DO NOT GO OVER 5000 CHARACTERS.`, []string{"code", "filename"})
 
 	return &CodeReviewer{
 		llm:      llm,
