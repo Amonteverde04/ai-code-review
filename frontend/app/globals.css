@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #000907;
-  --section-border: rgba(0, 9, 7, 0.3);
+  --background: #000907;
+  --foreground: #FAFAFA;
+  --section-border: rgba(250, 250, 250, 0.3);
   --holo-gradient: linear-gradient(90deg, #00ff73 0%, #00e676 25%, #00c37a 50%, #4bff73 75%, #00ff73 100%);
   --holo-animation: holo-shine 5s ease-in-out infinite;
   --holo-animation-hover: holo-shine 3s ease-in-out 1;
@@ -14,14 +14,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000907;
-    --foreground: #FAFAFA;
-    --section-border: rgba(250, 250, 250, 0.3);
-  }
 }
 
 body {
@@ -275,6 +267,15 @@ input[type="file"]::file-selector-button:hover {
 .ai-response-title {
   border-bottom: 1px solid var(--section-border);
   padding-bottom: 16px;
+}
+
+.hljs {
+  border-radius: 4px;
+  background-color: var(--foreground) !important;
+}
+
+.loading-container {
+  background: rgba(30,30,30,255);
 }
 
 @media (min-width: 639px) {

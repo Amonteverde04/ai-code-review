@@ -1,6 +1,5 @@
 "use client";
 
-import { LANGUAGES } from "@/lib/constants";
 import { CodeIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
@@ -8,10 +7,16 @@ import Loading from "./loading";
 import ButtonContainer from "./button-container";
 import ErrorToast from "./error-toast";
 import LanguageSelector from "./language-selector";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github.css";
 
 const MonacoEditor = dynamic(() => import("react-monaco-editor"), {
     ssr: false,
-  });
+    loading: () => <div className="w-full h-full flex justify-center items-center loading-container"><Loading text="Loading editor" justify="justify-center" /></div>
+});
 
 export default function InlineEditor() {
     const [code, setCode] = useState("");
@@ -55,7 +60,6 @@ export default function InlineEditor() {
       editor.layout(); // initial layout
     };
 
-    // Optional: handle resize events
     useEffect(() => {
       const resize = () => {
         if (editorRef.current) {
@@ -90,9 +94,11 @@ export default function InlineEditor() {
               <Loading text="Generating response" justify="justify-start" />
             )}
             {!isGenerating && aiResponse && (
-              <p className="ai-response-text break-words overflow-auto" aria-label="AI response text">
-                {aiResponse}
-              </p>  
+              <div className="prose prose-neutral dark:prose-invert max-w-none whitespace-pre-wrap">
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeHighlight]}>
+                  {aiResponse}
+                </ReactMarkdown>
+              </div>
             )}
           </div>
         </div>
